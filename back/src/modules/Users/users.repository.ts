@@ -3,6 +3,9 @@ import { User } from "./user.interface";
 
 @Injectable()
 export class UsersRepository{
+  signin() {
+    throw new Error("Method not implemented.");
+  }
   private users =[
     {
       id: 1,
@@ -36,11 +39,16 @@ export class UsersRepository{
     },
   ]
   async getUsers(){
-    return this.users
+    return this.users.map(({password, ...user})=>user)
   }
 
   async getUserById(id:number){
-    return this.users.find((user)=>user.id ===id)
+    const user= this.users.find((user)=>user.id ===id)
+    if (user){
+      const {password, ...userToShow} =user
+      return userToShow
+    }
+    return `Usuario con id: ${id} no encontrado`
   }
 
   async createUser(user: Omit<User, "id">){
@@ -65,6 +73,11 @@ export class UsersRepository{
       this.users= this.users.filter((user)=> user.id !==id)
       return {message:`Usuario con id: ${id} eliminado`, users:this.users}
     } else {return `Usuario con id: ${id} no encontrado` }
+  }
+
+  async findUserByEmail(email: string) {
+    const user = this.users.find((user) => user.email === email);
+    return user;
   }
 
 }

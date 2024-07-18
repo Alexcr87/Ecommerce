@@ -1,23 +1,20 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { UsersRepository } from "../Users/users.repository";
 
 @Injectable()
 export class AuthRepository{
-  private auth=
-  [
-    {
-      email:"christian@mail.com",
-      password: "1"
-    },
-    {
-      email:"yesi@mail.com",
-      password:"2"
-    },
-    {
-      email:"valen@mail.com",
-      password:"3"
-    },
-  ]
-  async getAuth(){
-    return this.auth
+  constructor (private readonly userRepository:UsersRepository){}
+  async signin(email, password){
+    if (!email ||!password) {
+      throw new UnauthorizedException('Email o password incorrectos')
+      
+    }
+
+    const user = await this.userRepository.findUserByEmail(email)
+    
+    if (!user|| user.password !== password) {   
+      throw new UnauthorizedException('Email o password incorrectos')
+    }
+    return {message: 'login exitoso', user}
   }
 }

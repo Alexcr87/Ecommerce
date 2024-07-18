@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post, Put, Delete, Param, Query } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Delete, Param, Query, UseGuards } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import { Product } from "./product.interface";
+import { AuthGuard } from "../Auth/auth.guard";
 
 
 @Controller("products")
@@ -20,16 +21,19 @@ export class ProductsContoller{
   }                                  
 
   @Post()
+  @UseGuards(AuthGuard)
   createProduct(@Body () product:Product){ 
     return this.ProductsService.createProduct(product)
   } 
 
   @Put(":id") 
+  @UseGuards(AuthGuard)
   updateProduct(@Body() product:Product, @Param("id") id:string){
     return this.ProductsService.updateProduct(Number(id), product )
   }
 
   @Delete(":id")
+  @UseGuards(AuthGuard)
   deleteProduct(@Param("id")id:string){
     return  this.ProductsService.deleteProduct(Number(id))
   }

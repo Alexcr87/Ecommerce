@@ -4,5 +4,5 @@ import { AuthRepository } from "./auth.repository";
 @Injectable()
 export class AuthService {
   constructor(private authRepository: AuthRepository){}
-  getAuth(){return this.authRepository.getAuth()}
+  signin(email, password){return this.authRepository.signin(email, password)}
 }
