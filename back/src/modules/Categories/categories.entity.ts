@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import{v4 as uuid} from 'uuid'
+import { Product } from "../Products/products.entity";
 
 @Entity({name: 'categories'})
 export class Categories{
@@ -10,5 +11,6 @@ export class Categories{
   @Column({type: 'varchar', length:50, nullable: false})
   name: string
 
-  // relacion 1 a 1 con products
+  @OneToMany(()=> Product, product=>product.categories)
+  poduct: Product[]
 }

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Product } from "./product.interface";
-import { filter } from "rxjs";
+
 
 @Injectable()
 export class ProductsRepository{

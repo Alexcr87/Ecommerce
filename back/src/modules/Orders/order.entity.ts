@@ -1,5 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import {v4 as uuid} from 'uuid'
+import { User } from "../Users/users.entity";
+import { OrderDetails } from "./orderDetails.entity";
 
 
 @Entity({name: 'orders'})
@@ -7,11 +9,13 @@ export class Order{
   @PrimaryGeneratedColumn('uuid')
   id: string = uuid
 
-  @Column()             //modificar relacion 1 a 1 con User
-  user_id: string
+  @ManyToOne(()=> User, (user)=> user.orders)
+  @JoinColumn()
+  user_id: User[]
 
   @Column({type:'date'})
   date: Date
 
-  //relacion 1 a 1 con orderDetails
+  @OneToOne(()=> OrderDetails, orderDetails=>orderDetails.order)
+  orderDetails: OrderDetails[]
 }
