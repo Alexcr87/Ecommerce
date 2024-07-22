@@ -1,49 +1,20 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "./user.interface";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User } from "./users.entity";
 
 @Injectable()
 export class UsersRepository{
-  signin() {
-    throw new Error("Method not implemented.");
-  }
-  private users =[
-    {
-      id: 1,
-      email: "chrsistian@mail.com",
-      name: "christian",
-      password:"1",
-      address: "Calle falsa 123",
-      phone: "00000000",
-      country: "Argentina",
-      city: "Santos Lugares"
-    },
-    {
-      id: 2,
-      email: "yesi@mail.com",
-      name: "yesi",
-      password:"2",
-      address: "Calle falsa 123",
-      phone: "11111111",
-      country: "Argentina",
-      city: "Santos Lugares"
-    },
-    {
-      id: 3,
-      email: "valen@mail.com",
-      name: "valen",
-      password:"3",
-      address: "Calle falsa 123",
-      phone: "22222222",
-      country: "Argentina",
-      city: "Mariano Acosta"
-    },
-  ]
-  async getUsers(){
-    return this.users.map(({password, ...user})=>user)
+  constructor(@InjectRepository(User) private usersRepository:Repository<User>){}
+  async getUsers():Promise<User[]>{   
+    const users = await this.usersRepository.find()
+    return users
   }
 
-  async getUserById(id:number){
-    const user= this.users.find((user)=>user.id ===id)
+  async getUserById(id:string):Promise<Omit< User, "password">| string>{
+    const user= await this.usersRepository.findOne({
+      where: {id}
+    })
     if (user){
       const {password, ...userToShow} =user
       return userToShow
@@ -51,32 +22,34 @@ export class UsersRepository{
     return `Usuario con id: ${id} no encontrado`
   }
 
-  async createUser(user: Omit<User, "id">){
-    const id = this.users.length +1
-    this.users = [... this.users,{id, ...user}]
-    return {id,...user}
+  async createUser(user: User[]):Promise<User[]>{
+    return await this.usersRepository.save(user)
+   
   }
 
-  async updateUser (id:number, user:User){
-    const userToUpdate = this.users.find((user)=>user.id ===id)
+  async updateUser (id:string, user:User):Promise<User[]|string>{
+    const userToUpdate = await this.usersRepository.findOne({
+      where: {id}
+    })
     if (userToUpdate) {
       Object.assign(userToUpdate, user)
-      return {message:`Usuario modificado con id: ${id} modificado con exito`,user:userToUpdate}
+      await this.usersRepository.save(userToUpdate)
+      return `Usuario con id: ${id} modificado con exito${userToUpdate}`
     }else{
       return `Usuario con id: ${id} no encontrado`
     }
   }
 
-  async deleteUser(id:number){
-    const userToRemove = this.users.find((user)=> user.id ===id)
+  async deleteUser(id:string):Promise<string>{
+    const userToRemove = await this.usersRepository.findOneBy({id})
     if (userToRemove) {
-      this.users= this.users.filter((user)=> user.id !==id)
-      return {message:`Usuario con id: ${id} eliminado`, users:this.users}
-    } else {return `Usuario con id: ${id} no encontrado` }
+      await this.usersRepository.remove(userToRemove)
+      return `Usuario con id: ${id} eliminado con exito`
+    } else {return `Usuario con id: ${id} no encontrado`}
   }
 
   async findUserByEmail(email: string) {
-    const user = this.users.find((user) => user.email === email);
+    const user = await this.usersRepository.findOneBy({email});
     return user;
   }
 

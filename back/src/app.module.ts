@@ -20,7 +20,7 @@ import typormConfig from './config/typeorm'
     }),
    UsersModule,
     ProductsModule, 
-    AuthModule
+    //AuthModule
   ],
   controllers: [],
   providers: [],
