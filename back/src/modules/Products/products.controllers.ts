@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Put, Delete, Param, Query, UseGuards } from "@nestjs/common";
 import { ProductsService } from "./products.service";
-import { Product } from "./product.interface";
+import { Product } from "./products.entity";
 import { AuthGuard } from "../Auth/auth.guard";
 
 
@@ -17,24 +17,24 @@ export class ProductsContoller{
 
   @Get(":id")
   getProductByID(@Param("id") id:string){
-    return this.ProductsService.getProductById(Number(id))
+    return this.ProductsService.getProductById(id)
   }                                  
 
   @Post()
   @UseGuards(AuthGuard)
-  createProduct(@Body () product:Product){ 
+  createProduct(@Body () product:Product[]){ 
     return this.ProductsService.createProduct(product)
   } 
 
   @Put(":id") 
   @UseGuards(AuthGuard)
   updateProduct(@Body() product:Product, @Param("id") id:string){
-    return this.ProductsService.updateProduct(Number(id), product )
+    return this.ProductsService.updateProduct(id, product )
   }
 
   @Delete(":id")
   @UseGuards(AuthGuard)
   deleteProduct(@Param("id")id:string){
-    return  this.ProductsService.deleteProduct(Number(id))
+    return  this.ProductsService.deleteProduct(id)
   }
 }

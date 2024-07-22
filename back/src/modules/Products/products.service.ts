@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ProductsRepository } from "./products.repository";
-import { Product } from "./product.interface";
+import { Product } from "./products.entity";
 
 @Injectable()
 export class ProductsService{
@@ -10,18 +10,18 @@ export class ProductsService{
     return this.productRepository.getProducts()
   }
   
-  getProductById(id:number){
+  getProductById(id:string){
     return this.productRepository.getProductById(id)
   }
   
-  createProduct(product:Omit<Product, "id">):Promise <Product>{
+  createProduct(product:Product[]){
     return this.productRepository.createProduct(product)
   }
   
-  deleteProduct(id: number) {
+  deleteProduct(id: string) {
     return this.productRepository.deleteProduct(id)
   }
-  updateProduct(id:number, product: Product) {
+  updateProduct(id:string, product: Product) {
     return this.productRepository.updateProduct(id, product)
     
   }
