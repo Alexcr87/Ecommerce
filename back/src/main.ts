@@ -4,7 +4,7 @@ import { loggerGlobal} from './middleware/logger.middleware';
 import { connectionSource } from './config/typeorm';
 import { CategoriesSeed } from './modules/Seeds/categories/categories.seed';
 import { ProductsSeed } from './modules/Seeds/products/products,seed';
-import 'reflect-metadata'
+
 
 async function bootstrap() {
   await connectionSource.initialize()

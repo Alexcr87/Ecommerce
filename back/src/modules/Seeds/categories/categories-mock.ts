@@ -1,4 +1,4 @@
-export const categoriesMock: string[]=[
+export const categoriesMock:string[]=[
   'smartphone',
   'mouse',
   'monitor',

@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Categories } from "src/modules/Categories/categories.entity";
 import { Product } from "src/modules/Products/products.entity";
-import { In, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { productsMock } from "./products-mock";
-import { categoriesMock } from "../categories/categories-mock";
+
 
 @Injectable()
 export class ProductsSeed{
@@ -14,7 +14,9 @@ export class ProductsSeed{
 ) {}
 
 async findCategoryByName(category:string){
-  const foundCategory =await this.CategoriesRepository.findOne({where:{name:In(categoriesMock) }})
+  const foundCategory =await this.CategoriesRepository.findOne({where:{name:category }})
+  
+  
   if (!foundCategory) {
     throw new Error(`Categoria ${category} no encontrada`)
   }
@@ -23,6 +25,7 @@ async findCategoryByName(category:string){
 
 async seed (){
   const existingProduct= (await this.productRepository.find()).map((product)=>product.name)
+
   for (const productData of productsMock) {
     if (!existingProduct.includes(productData.name)) {
       const product= new Product()
@@ -30,9 +33,11 @@ async seed (){
       product.description=productData.description
       product.price=productData.price
       product.stock=productData.stock
-      const asignCategory = await this.findCategoryByName(productData.category)
-      product.category_id= asignCategory
+      product.category_id = await this.findCategoryByName(productData.category)
       console.log(product);
+      
+      //product.category_id= asignCategory
+      
       
       await this.productRepository.save(product)
     }
