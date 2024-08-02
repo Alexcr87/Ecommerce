@@ -1,13 +1,13 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import{v4 as uuid} from 'uuid'
 import { Categories } from "../Categories/categories.entity";
 import { OrderDetails } from "../Orders/orderDetails.entity";
 
 
-@Entity({name:'porducts'})
+@Entity({name:'products'})
 export class Product{
   @PrimaryGeneratedColumn('uuid')
-  id: string = uuid
+  id: string = uuid()
 
   @Column({type:'varchar', length:50, nullable: false})
   name: string
@@ -24,8 +24,9 @@ export class Product{
   @Column({type:'varchar', default:'../../assets/sinStock.png'})
   imgUrl:string
 
-  @ManyToOne(()=>Categories, categories=> categories.poduct)
-  categories:Categories
+  @ManyToOne(()=>Categories, category=> category.products)
+  @JoinColumn({name:'category_id'})
+  category_id:Categories
 
   @ManyToMany(()=>OrderDetails, orderdetails=>orderdetails.products)
   @JoinTable({

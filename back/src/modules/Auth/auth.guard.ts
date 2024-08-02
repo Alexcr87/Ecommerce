@@ -5,22 +5,22 @@ import { Observable } from "rxjs";
 function validateRequest(request:Request){
   const Authorization= request.headers['authorization']
   if (!Authorization) {
-    throw new UnauthorizedException('Authorization header not found');
+    throw new UnauthorizedException('Autorizzacion no encontrada')
   }
 
-  const [authType, credentials] = Authorization.split(' ');
+  const [authType, credentials] = Authorization.split(' ')
 
   if (authType !== 'Basic') {
-    throw new UnauthorizedException('Invalid authorization type');
+    throw new UnauthorizedException('tipo invalido de autorizacion')
   }
 
-  const [email, password] = Buffer.from(credentials, 'base64').toString('ascii').split(':');
+  const [email, password] = Buffer.from(credentials, 'base64').toString('ascii').split(':')
 
   if (!email || !password) {  
-    throw new UnauthorizedException('Invalid authorization format');
+    throw new UnauthorizedException('formato de autorizzacion invalido')
   }
 
-  return true;
+  return true
 }
 
 @Injectable()

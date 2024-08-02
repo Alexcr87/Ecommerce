@@ -15,7 +15,7 @@ export class ProductsService{
   }
   
   createProduct(product:Product[]){
-    return this.productRepository.createProduct(product)
+    //return this.productRepository.createProduct(product)
   }
   
   deleteProduct(id: string) {

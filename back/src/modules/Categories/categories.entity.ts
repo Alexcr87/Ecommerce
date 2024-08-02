@@ -6,11 +6,11 @@ import { Product } from "../Products/products.entity";
 export class Categories{
 
   @PrimaryGeneratedColumn('uuid')
-  id: string = uuid
+  id: string = uuid()
 
   @Column({type: 'varchar', length:50, nullable: false})
   name: string
 
-  @OneToMany(()=> Product, product=>product.categories)
-  poduct: Product[]
+  @OneToMany(()=> Product, product=>product.category_id)
+  products: Product[]
 }

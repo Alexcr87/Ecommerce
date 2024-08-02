@@ -20,7 +20,7 @@ export class ProductsContoller{
     return this.ProductsService.getProductById(id)
   }                                  
 
-  @Post()
+  @Post("seeder")
   @UseGuards(AuthGuard)
   createProduct(@Body () product:Product[]){ 
     return this.ProductsService.createProduct(product)

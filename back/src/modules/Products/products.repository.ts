@@ -2,12 +2,15 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Product } from "./products.entity";
 import { Repository } from "typeorm";
+import { Categories } from "../Categories/categories.entity";
 
 
 @Injectable()
 export class ProductsRepository{
-  constructor(@InjectRepository(Product) private productRepository:Repository<Product>){}
-  
+  constructor(
+    @InjectRepository(Product) private productRepository:Repository<Product>,
+    @InjectRepository(Categories)private categoriesRepository:Repository<Categories>
+){}
   async getProducts():Promise<Product[]>{
     return await this.productRepository.find()
   }
@@ -17,19 +20,33 @@ export class ProductsRepository{
     if (product) {
       return product
     }else{
-      return `Usuario con id: ${id} no encontrado`
+      return `Producto con id: ${id} no encontrado`
     }
   }
 
-  async createProduct(product:Product[]):Promise<Product[]>{
-    return await this.productRepository.save(product)
-  }
+ /* async createProduct(products:Product[]):Promise<Product[]|string>{
+    
+    for (const product of products) {
+      let category = await this.categoriesRepository.findOne({where:{name:product.category}})
+      if (!category) {
+        const newCategory = this.categoriesRepository.create({
+          name:product.category,
+          products:[product.name],
+        })
+        await this.categoriesRepository.create
+      }else{
+        const newProduct =await this.productRepository.findOne({where:{name:product.name}})
+        if (!newProduct) {
+          await this.productRepository.create
+        }
+      }
+    }
+    
+  }*/
 
    async updateProduct(id: string, product: Product):Promise<Product[]|string> {
     const productToUpdate = await this.productRepository.findOne({where: {id}})
     if(productToUpdate){
-      console.log("entro al if", productToUpdate);
-      console.log("valor nuevo", productToUpdate);
       Object.assign(productToUpdate, product)
       await this.productRepository.save(productToUpdate)
       return `Producto con id: ${id} modificado con exito ${productToUpdate}`

@@ -1,18 +1,15 @@
 import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
 import { Order } from "./order.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class OrdersRepository{
-  private  orders:Order[]=[
-    {
-      id:'',
-      user_id:[],
-      date:new Date ('2024-07-01T12:00:00Z'),
-      orderDetails:[],
-  }
-]
+  constructor (@InjectRepository(Order) private orderRepository:Repository<Order>){}
 
-  async getOrders(){
-    return this.orders
+  async getOrders():Promise<Order[]>{
+    return await this.orderRepository.find()
   }
+
+  
 }

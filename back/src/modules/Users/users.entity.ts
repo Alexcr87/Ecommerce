@@ -30,7 +30,7 @@ export class User{
   @Column({type: "varchar", length: 50})
   city: string
 
-  @OneToMany(()=>Order, Order=>Order.user_id)
+  @OneToMany(()=>Order, Order=>Order.user)
   orders:Order[]
   
 }

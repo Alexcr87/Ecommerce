@@ -3,12 +3,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./users.entity";
 
+
 @Injectable()
 export class UsersRepository{
   constructor(@InjectRepository(User) private usersRepository:Repository<User>){}
   async getUsers():Promise<User[]>{   
-    const users = await this.usersRepository.find()
-    return users
+    return await this.usersRepository.find({relations:{orders:true}})
   }
 
   async getUserById(id:string):Promise<Omit< User, "password">| string>{
@@ -24,7 +24,6 @@ export class UsersRepository{
 
   async createUser(user: User[]):Promise<User[]>{
     return await this.usersRepository.save(user)
-   
   }
 
   async updateUser (id:string, user:User):Promise<User[]|string>{
@@ -34,7 +33,7 @@ export class UsersRepository{
     if (userToUpdate) {
       Object.assign(userToUpdate, user)
       await this.usersRepository.save(userToUpdate)
-      return `Usuario con id: ${id} modificado con exito${userToUpdate}`
+      return `Usuario con id: ${id} modificado con exito ${userToUpdate}`
     }else{
       return `Usuario con id: ${id} no encontrado`
     }
@@ -49,8 +48,8 @@ export class UsersRepository{
   }
 
   async findUserByEmail(email: string) {
-    const user = await this.usersRepository.findOneBy({email});
-    return user;
+    const user = await this.usersRepository.findOneBy({email})
+    return user
   }
 
 }

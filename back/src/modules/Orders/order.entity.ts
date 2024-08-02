@@ -7,11 +7,11 @@ import { OrderDetails } from "./orderDetails.entity";
 @Entity({name: 'orders'})
 export class Order{
   @PrimaryGeneratedColumn('uuid')
-  id: string = uuid
+  id: string = uuid()
 
   @ManyToOne(()=> User, (user)=> user.orders)
-  @JoinColumn()
-  user_id: User[]
+  @JoinColumn({name: 'user_id'})
+  user: User
 
   @Column({type:'date'})
   date: Date
