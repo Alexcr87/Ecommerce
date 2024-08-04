@@ -8,8 +8,8 @@ import { Categories } from "./categories.entity";
 export class CategoriesControllers{
   constructor(private readonly categoriesService: CategoriesService){}
 
-  @Post('seeder')
- addCategories(@Body()categories:Categories[]){
+  @Post()
+ addCategories(@Body()categories:Categories){
    return this.categoriesService.addCategories(categories)}
 
  @Get()

@@ -10,11 +10,11 @@ import { productsMock } from "./products-mock";
 export class ProductsSeed{
   constructor(
     @InjectRepository(Product)private readonly productRepository:Repository<Product>,
-    @InjectRepository(Categories) private readonly CategoriesRepository:Repository<Categories>
+    @InjectRepository(Categories) private readonly categoriesRepository:Repository<Categories>
 ) {}
 
 async findCategoryByName(category:string){
-  const foundCategory =await this.CategoriesRepository.findOne({where:{name:category }})
+  const foundCategory =await this.categoriesRepository.findOne({where:{name:category }})
   
   
   if (!foundCategory) {
@@ -34,11 +34,7 @@ async seed (){
       product.price=productData.price
       product.stock=productData.stock
       product.category_id = await this.findCategoryByName(productData.category)
-      console.log(product);
-      
-      //product.category_id= asignCategory
-      
-      
+      console.log(product); 
       await this.productRepository.save(product)
     }
     

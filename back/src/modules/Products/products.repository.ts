@@ -7,12 +7,13 @@ import { Categories } from "../Categories/categories.entity";
 
 @Injectable()
 export class ProductsRepository{
+ 
   constructor(
     @InjectRepository(Product) private productRepository:Repository<Product>,
     @InjectRepository(Categories)private categoriesRepository:Repository<Categories>
 ){}
   async getProducts():Promise<Product[]>{
-    return await this.productRepository.find()
+    return await this.productRepository.find({relations:['category_id']})
   }
 
   async getProductById(id:string):Promise<string | Product[]>{
@@ -24,25 +25,32 @@ export class ProductsRepository{
     }
   }
 
- /* async createProduct(products:Product[]):Promise<Product[]|string>{
+  async findCategoryByName(category:Categories){
+    const foundCategory =await this.categoriesRepository.findOne({where:{name:category.id }})
     
-    for (const product of products) {
-      let category = await this.categoriesRepository.findOne({where:{name:product.category}})
-      if (!category) {
-        const newCategory = this.categoriesRepository.create({
-          name:product.category,
-          products:[product.name],
-        })
-        await this.categoriesRepository.create
-      }else{
-        const newProduct =await this.productRepository.findOne({where:{name:product.name}})
-        if (!newProduct) {
-          await this.productRepository.create
-        }
-      }
+    
+    if (!foundCategory) {
+      throw new Error(`Categoria ${category} no encontrada`)
     }
-    
-  }*/
+    return foundCategory
+  }
+
+ async createProduct(products:Product):Promise<Product|string>{
+  const existingProduct= (await this.productRepository.find()).map((products)=>products.name)
+    if (!existingProduct.includes(products.name)) {
+      const product= new Product()
+      product.name = products.name
+      product.description=products.description
+      product.price=products.price
+      product.stock=products.stock
+      product.category_id = await this.findCategoryByName(products.category_id)
+      await this.productRepository.save(product)
+      return product
+    }else{
+      return `el porducto con con nombre ${products.name} ya existe`
+    }
+
+  }
 
    async updateProduct(id: string, product: Product):Promise<Product[]|string> {
     const productToUpdate = await this.productRepository.findOne({where: {id}})

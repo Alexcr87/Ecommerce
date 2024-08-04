@@ -17,5 +17,5 @@ export class Order{
   date: Date
 
   @OneToOne(()=> OrderDetails, orderDetails=>orderDetails.order)
-  orderDetails: OrderDetails[]
+  orderDetails: OrderDetails
 }

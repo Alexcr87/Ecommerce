@@ -11,7 +11,7 @@ export class CategoriesService{
     return this.categoriesRepository.getCategories()
   }
   
-  addCategories(categories:Categories[]) {
+  addCategories(categories:Categories) {
     return this.categoriesRepository.addCategories(categories)
   }
 }
