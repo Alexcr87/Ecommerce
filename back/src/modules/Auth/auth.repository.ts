@@ -1,20 +1,20 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { UsersRepository } from "../Users/users.repository";
+import { LoginUserDto } from "./loginUser.dto";
 
 @Injectable()
 export class AuthRepository{
   constructor (private readonly userRepository:UsersRepository){}
-  async signin(email, password){
-    if (!email ||!password) {
+  async signin(user:LoginUserDto):Promise<string>{
+    if (!user.email ||!user.password) {
       throw new UnauthorizedException('Email o password incorrectos')
-      
     }
 
-    const user = await this.userRepository.findUserByEmail(email)
+    const login = await this.userRepository.findUserByEmail(user.email)
     
-    if (!user|| user.password !== password) {   
+    if (!login|| login.password !== user.password) {   
       throw new UnauthorizedException('Email o password incorrectos')
     }
-    return {message: 'login exitoso', user}
+    return 'Login Exitoso'
   }
 }

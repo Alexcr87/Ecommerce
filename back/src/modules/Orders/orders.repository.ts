@@ -5,7 +5,8 @@ import { In, Repository } from "typeorm";
 import { OrderDetails } from "./orderDetails.entity";
 import { User } from "../Users/users.entity";
 import { Product } from "../Products/products.entity";
-import { orderDto, toShowOrderDto } from "./orderDto";
+import { toShowOrderDto } from "./order.dto";
+import { CreateOrderDto } from "./createOrder.dto";
 
 @Injectable()
 export class OrdersRepository{
@@ -16,7 +17,7 @@ export class OrdersRepository{
     @InjectRepository(Product) private productRepository:Repository<Product>
   ){}
   
-  async addOrders(Orders:orderDto):Promise<toShowOrderDto>{
+  async addOrders(Orders:CreateOrderDto):Promise<toShowOrderDto>{
     const foundUser = await this.userRepository.findOne({where:{id:Orders.userId}})
     if (!foundUser) {
       throw new Error(`Usuario con id ${Orders.userId} no encontrado`)

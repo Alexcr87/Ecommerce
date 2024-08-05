@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./users.entity";
+import { CreateUserDto } from "./createUser.dto";
 
 
 @Injectable()
@@ -22,16 +23,25 @@ export class UsersRepository{
     return `Usuario con id: ${id} no encontrado`
   }
 
-  async createUser(user: User[]):Promise<User[]>{
-    return await this.usersRepository.save(user)
+  async createUser(createUserDto: CreateUserDto):Promise<User>{
+    const newUser=new User()
+    newUser.email=createUserDto.email
+    newUser.address =createUserDto.address
+    newUser.city =createUserDto.city
+    newUser.country=createUserDto.country
+    newUser.name=createUserDto.name
+    newUser.password=createUserDto.password
+    newUser.phone =createUserDto.phone
+
+    return await this.usersRepository.save(newUser)
   }
 
-  async updateUser (id:string, user:User):Promise<User[]|string>{
+  async updateUser (id:string, createUserDto:CreateUserDto):Promise<User[]|string>{
     const userToUpdate = await this.usersRepository.findOne({
       where: {id}
     })
     if (userToUpdate) {
-      Object.assign(userToUpdate, user)
+      Object.assign(userToUpdate, createUserDto)
       await this.usersRepository.save(userToUpdate)
       return `Usuario con id: ${id} modificado con exito ${userToUpdate}`
     }else{

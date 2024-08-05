@@ -7,7 +7,7 @@ import { Order } from "../Orders/order.entity"
 export class User{
 
   @PrimaryGeneratedColumn('uuid')
-  id: string = uuid
+  id: string = uuid()
 
   @Column({type: "varchar", length: 50, nullable: false, unique: true})
   email: string

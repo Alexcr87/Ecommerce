@@ -32,9 +32,8 @@ async seed (){
       product.name = productData.name
       product.description=productData.description
       product.price=productData.price
-      product.stock=productData.stock
+      product.stock=productData.stock    
       product.category_id = await this.findCategoryByName(productData.category)
-      console.log(product); 
       await this.productRepository.save(product)
     }
     
