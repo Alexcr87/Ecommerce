@@ -22,7 +22,6 @@ export class ProductsContoller{
   }                                  
 
   @Post()
-  @UseGuards(AuthGuard)
   createProduct(@Body () product:Product){ 
     return this.ProductsService.createProduct(product)
   } 
@@ -34,7 +33,6 @@ export class ProductsContoller{
   }
 
   @Delete(":id")
-  @UseGuards(AuthGuard)
   deleteProduct(@Param("id", ParseUUIDPipe)id:string){
     return  this.ProductsService.deleteProduct(id)
   }

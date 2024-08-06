@@ -19,6 +19,12 @@ export class CreateUserDto{
   password:string
 
   @IsString()
+  @MinLength(8)
+  @MaxLength(15)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=!@#$%^&*])[A-Za-z\d=!@#$%^&*]{8,15}$/)
+  confirmPassword:string
+
+  @IsString()
   @MinLength(3)
   @MaxLength(80)
   address:string

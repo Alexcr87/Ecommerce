@@ -12,6 +12,7 @@ import { AuthModule } from './modules/Auth/auth.module';
 import { CloudinaryService } from './common/cloudinary.service';
 import { CloudinaryConfig } from './config/cloudinary';
 import { FilesModule } from './files/files.module';
+import { JwtModule } from '@nestjs/jwt';
 
 
 @Module({
@@ -31,7 +32,12 @@ import { FilesModule } from './files/files.module';
     CategoriesModule,
     OrdersModule,
     SeedsModule,
-    FilesModule
+    FilesModule,
+    JwtModule.register({
+      global:true,
+      signOptions:{expiresIn:'1h'},
+      secret: process.env.JWT_SECRET,
+    })
   ],
   controllers: [],
   providers: [{

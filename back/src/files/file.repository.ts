@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CloudinaryService } from "src/common/cloudinary.service";
 import { Product } from "src/modules/Products/products.entity";
 import { Repository } from "typeorm";
 import { fileDto } from "./files.dto";

@@ -1,14 +1,16 @@
-import { Controller, FileTypeValidator, MaxFileSizeValidator, Param, ParseFilePipe, ParseUUIDPipe, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Controller, FileTypeValidator, MaxFileSizeValidator, Param, ParseFilePipe, ParseUUIDPipe, Post, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { FilesRepository } from "./file.repository";
+import { AuthGuard } from "src/modules/Auth/auth.guard";
 
 @Controller("files")
 export class FilesController{
   constructor (private readonly FilesRepository:FilesRepository){}
   
   @Post('uploadImage/:id')
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@Param('id') id:string, @UploadedFile(
+  async uploadFile(@Req() request:Request&{user:any}, @Param('id') id:string , @UploadedFile(
     new ParseFilePipe({
       validators:[
         new MaxFileSizeValidator({
@@ -21,7 +23,9 @@ export class FilesController{
       ]
     })
   )file:Express.Multer.File){
-   return this.FilesRepository.uploadFile(file, id)
+   console.log(request.user);
+   
+    return this.FilesRepository.uploadFile(file, id)
   
   }
 }
