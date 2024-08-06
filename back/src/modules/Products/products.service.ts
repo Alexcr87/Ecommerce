@@ -5,6 +5,7 @@ import { Product } from "./products.entity";
 @Injectable()
 export class ProductsService{
   
+  
   constructor(private productRepository: ProductsRepository){}
   getProducts(){
     return this.productRepository.getProducts()

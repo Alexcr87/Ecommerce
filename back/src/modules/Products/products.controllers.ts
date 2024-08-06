@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Put, Delete, Param, Query, UseGuards, ParseUUIDPipe } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Delete, Param, Query, UseGuards, ParseUUIDPipe, UseInterceptors, UploadedFile } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import { Product } from "./products.entity";
 import { AuthGuard } from "../Auth/auth.guard";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 
 @Controller("products")
@@ -37,4 +38,5 @@ export class ProductsContoller{
   deleteProduct(@Param("id", ParseUUIDPipe)id:string){
     return  this.ProductsService.deleteProduct(id)
   }
+
 }

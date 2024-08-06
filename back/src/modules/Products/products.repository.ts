@@ -3,6 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Product } from "./products.entity";
 import { Repository } from "typeorm";
 import { Categories } from "../Categories/categories.entity";
+import { fileDto } from "src/files/files.dto";
+import { FilesServices } from "src/files/files.service";
 
 
 @Injectable()
@@ -10,7 +12,8 @@ export class ProductsRepository{
  
   constructor(
     @InjectRepository(Product) private productRepository:Repository<Product>,
-    @InjectRepository(Categories)private categoriesRepository:Repository<Categories>
+    @InjectRepository(Categories)private categoriesRepository:Repository<Categories>,
+
 ){}
   async getProducts():Promise<Product[]>{
     return await this.productRepository.find({relations:['category_id']})
@@ -88,4 +91,16 @@ export class ProductsRepository{
       take:limit
     })
   }
+
+  /*async uploadFile(file:fileDto, id:string){
+    const url = await this.FileService.uploadFile({
+      fieldname:file.fieldname,
+      buffer:file.buffer,
+      originalname:file.originalname,
+      mimetype:file.mimetype,
+      size:file.size
+    })
+    await this.productRepository.update(id, {imgUrl:url})
+    return {imgUrl:url}
+  }*/
 }

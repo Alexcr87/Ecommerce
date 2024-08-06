@@ -1,8 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { FilesRepository } from "./files.repository";
+import { CloudinaryService } from "src/common/cloudinary.service";
+import { fileDto } from "./files.dto";
 
 @Injectable()
 export class FilesServices{
-  constructor(private readonly FilesRepository:FilesRepository){}
+  constructor(private readonly cloudinaryService:CloudinaryService){}
   
+  async uploadFile(file:fileDto){
+    return this.cloudinaryService.uploadFile(file.buffer, file.originalname)
+  }
 }
+

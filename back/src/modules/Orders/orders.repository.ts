@@ -38,7 +38,6 @@ export class OrdersRepository{
       newOrderDetails.price = totalPrice;
       for (const product of existingProducts) {
         product.stock = product.stock -1
-        console.log(product, "stock");
         await this.productRepository.save(product)
       }
       

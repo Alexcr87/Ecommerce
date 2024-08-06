@@ -9,6 +9,9 @@ import { OrdersModule } from './modules/Orders/orders.module';
 import { SeedsModule } from './modules/Seeds/seeds.module';
 import { APP_PIPE } from '@nestjs/core';
 import { AuthModule } from './modules/Auth/auth.module';
+import { CloudinaryService } from './common/cloudinary.service';
+import { CloudinaryConfig } from './config/cloudinary';
+import { FilesModule } from './files/files.module';
 
 
 @Module({
@@ -22,17 +25,18 @@ import { AuthModule } from './modules/Auth/auth.module';
       inject:[ConfigService],
       useFactory:(configService: ConfigService)=> configService.get('typeorm')
     }),
-   UsersModule,
+    UsersModule,
     ProductsModule, 
     AuthModule,
     CategoriesModule,
     OrdersModule,
-    SeedsModule
+    SeedsModule,
+    FilesModule
   ],
   controllers: [],
   providers: [{
     provide: APP_PIPE,
     useClass: ValidationPipe,
-  },],
+  },CloudinaryService, CloudinaryConfig],
 })
 export class AppModule {}
