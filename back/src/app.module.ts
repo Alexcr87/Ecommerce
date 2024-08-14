@@ -43,6 +43,6 @@ import { JwtModule } from '@nestjs/jwt';
   providers: [{
     provide: APP_PIPE,
     useClass: ValidationPipe,
-  },CloudinaryService, CloudinaryConfig],
+  },CloudinaryService, CloudinaryConfig], 
 })
 export class AppModule {}

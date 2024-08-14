@@ -5,11 +5,14 @@ import { connectionSource } from './config/typeorm';
 import { CategoriesSeed } from './modules/Seeds/categories/categories.seed';
 import { ProductsSeed } from './modules/Seeds/products/products,seed';
 import { ValidationPipe } from '@nestjs/common'
+import { auth } from 'express-openid-connect';
+import {config as auth0Config} from './config/auth0'
 
 
 async function bootstrap() {
   await connectionSource.initialize()
   const app = await NestFactory.create(AppModule);
+  app.use(auth(auth0Config))
   app.useGlobalPipes(new ValidationPipe())
   app.use(loggerGlobal)
   

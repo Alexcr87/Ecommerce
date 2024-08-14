@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CloudinaryService } from "src/common/cloudinary.service";
+import { CloudinaryService } from "../common/cloudinary.service";
 import { fileDto } from "./files.dto";
 
 @Injectable()

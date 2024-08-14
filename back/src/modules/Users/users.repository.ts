@@ -25,7 +25,7 @@ export class UsersRepository{
   }
 
   async createUser(createUserDto: CreateUserDto):Promise<Omit<User, 'password'>>{
-    await this.usersRepository.create(createUserDto)
+    //await this.usersRepository.create(createUserDto)
     const newUser = await this.usersRepository.save(createUserDto)
     const {password, confirmPassword, ...result} = newUser
     return result

@@ -2,7 +2,9 @@ import { Body, Controller, Get, Post, Put, Delete, Param, Query, UseGuards, Pars
 import { ProductsService } from "./products.service";
 import { Product } from "./products.entity";
 import { AuthGuard } from "../Auth/auth.guard";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { RolesGuard } from "../../guards/roles.guard";
+import { Roles } from "../../decorators/roles.decorators";
+import { Rol } from "../Users/roles.enum";
 
 
 @Controller("products")
@@ -17,6 +19,8 @@ export class ProductsContoller{
   }
 
   @Get(":id")
+  @Roles(Rol.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   getProductByID(@Param("id", ParseUUIDPipe) id:string){
     return this.ProductsService.getProductById(id)
   }                                  

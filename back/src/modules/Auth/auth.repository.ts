@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable} from "@nestjs/common";
 import { UsersRepository } from "../Users/users.repository";
 import { LoginUserDto } from "./loginUser.dto";
 import { CreateUserDto } from "../Users/createUser.dto";
 import { User } from "../Users/users.entity";
 import * as bcrypt from 'bcrypt'
 import { JwtService } from "@nestjs/jwt";
+import { Rol } from "../Users/roles.enum";
 
 @Injectable()
 export class AuthRepository{
@@ -35,13 +36,14 @@ export class AuthRepository{
       sub: login.id,
       id:login.id,
       email:login.email,
-    }
+      roles:[login.isAdmin ? Rol.Admin : false]
+    }  
+    
     const token = this.jwtService.sign(userPayload)
-    const decodedToken = this.jwtService.decode(token) as any
-    const Inicio = new Date(decodedToken.iat * 1000)
-    const Expiracion = new Date(decodedToken.exp * 1000)
+    
+    
 
-    return { succes: 'Login Exitoso, Tu sesion caducara en 1 hora', token, Inicio, Expiracion}
+    return { succes: 'Login Exitoso, Tu sesion caducara en 1 hora', token}
   }
 
   async signUp(createUser: CreateUserDto):Promise<Omit<User, 'password'>>{
@@ -56,7 +58,7 @@ export class AuthRepository{
     if (!hashedPassword) {
       throw new BadRequestException('La contraseña no fue codificada')
     }
-    const newUser = this.userRepository.createUser({...createUser, password:hashedPassword})
+    const newUser = await this.userRepository.createUser({...createUser, password:hashedPassword})
   
     return newUser
   }

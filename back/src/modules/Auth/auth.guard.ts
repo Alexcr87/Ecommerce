@@ -1,28 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Request } from "express";
 import { Observable } from "rxjs";
+import { Rol } from "../Users/roles.enum";
 
-/*function validateRequest(request:Request){
-  const Authorization= request.headers['authorization']
-  if (!Authorization) {
-    throw new UnauthorizedException('Autorizzacion no encontrada')
-  }
-
-  const [authType, credentials] = Authorization.split(' ')
-
-  if (authType !== 'Basic') {
-    throw new UnauthorizedException('tipo invalido de autorizacion')
-  }
-
-  const [email, password] = Buffer.from(credentials, 'base64').toString('ascii').split(':')
-
-  if (!email || !password) {  
-    throw new UnauthorizedException('formato de autorizzacion invalido')
-  }
-
-  return true
-}*/
 
 @Injectable()
 export class AuthGuard implements CanActivate{
@@ -42,7 +22,6 @@ export class AuthGuard implements CanActivate{
       const payload = this.jwtService.verify(token, {secret})
       payload.iat = new Date(payload.iat * 1000)
       payload.exp =new Date(payload.exp * 1000)
-      payload.roles = ['admin']
       request.user = payload
       return true
     } catch (error) {

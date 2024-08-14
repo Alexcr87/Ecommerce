@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Put, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Put, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { UsersService } from "./users.service";
-import { User } from "./users.entity";
 import { AuthGuard } from "../Auth/auth.guard";
-import { FileInterceptor } from "@nestjs/platform-express";
 import { CreateUserDto } from "./createUser.dto";
+import { Roles } from "../../decorators/roles.decorators";
+import { Rol } from "./roles.enum";
+import { RolesGuard } from "../../guards/roles.guard";
+import { Request } from "express";
 
 
 @Controller("users")
@@ -13,9 +15,17 @@ export class UsersController{
   ){}
 
   @Get()
-  @UseGuards(AuthGuard)
+  @Roles(Rol.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   getUsers(){
     return this.userService.getUsers()
+  }
+  
+
+  @Get('auth0/protected')
+  getAuth0Protected(@Req()req:Request){
+    console.log(req.oidc);
+    return JSON.stringify(req.oidc.user)
   }
 
   @Get(":id")
@@ -41,5 +51,7 @@ export class UsersController{
   deleteUser(@Param("id", ParseUUIDPipe) id:string){
     return this.userService.deleteUser(id)
   }
+
+  
 
 }
