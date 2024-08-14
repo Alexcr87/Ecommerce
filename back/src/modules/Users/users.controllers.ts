@@ -6,14 +6,16 @@ import { Roles } from "../../decorators/roles.decorators";
 import { Rol } from "./roles.enum";
 import { RolesGuard } from "../../guards/roles.guard";
 import { Request } from "express";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
-
+@ApiTags('Users')
 @Controller("users")
 export class UsersController{
   constructor(private readonly userService:UsersService,
 
   ){}
 
+  @ApiBearerAuth()
   @Get()
   @Roles(Rol.Admin)
   @UseGuards(AuthGuard, RolesGuard)
@@ -28,6 +30,7 @@ export class UsersController{
     return JSON.stringify(req.oidc.user)
   }
 
+  @ApiBearerAuth()
   @Get(":id")
   @UseGuards(AuthGuard)
   getUserbyId(@Param("id", ParseUUIDPipe) id:string){
@@ -39,13 +42,14 @@ export class UsersController{
     return this.userService.createUser(createUserDto)
   }
 
+  @ApiBearerAuth()
   @Put(":id")
   @UseGuards(AuthGuard)
   updateUser(@Param("id", ParseUUIDPipe) id:string, @Body()createUserDto:CreateUserDto){
     return this.userService.updateUser(id, createUserDto)
   }
 
-
+  @ApiBearerAuth()
   @Delete(":id")
   @UseGuards(AuthGuard)
   deleteUser(@Param("id", ParseUUIDPipe) id:string){
