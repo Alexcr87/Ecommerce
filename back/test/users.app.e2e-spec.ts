@@ -32,7 +32,7 @@ describe('AppController (e2e)', () => {
   });
 
   it('Get /users/id returns an user with an OK status code', async()=>{
-    const req = await request(app.getHttpServer()).get('/users/631c2926-fae5-4613-a9de-8aeb5dd6fc90').set('authorization', `Bearer ${authToken}`)
+    const req = await request(app.getHttpServer()).get('/users/b7bc51f6-ece7-472c-90bc-d206b3767d91').set('authorization', `Bearer ${authToken}`)
     expect(req.status).toBe(200)
     expect(req.body).toBeInstanceOf(Object)
   })

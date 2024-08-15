@@ -3,8 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Product } from "./products.entity";
 import { Repository } from "typeorm";
 import { Categories } from "../Categories/categories.entity";
-import { fileDto } from "src/files/files.dto";
-import { FilesServices } from "src/files/files.service";
+
 
 
 @Injectable()
@@ -30,8 +29,6 @@ export class ProductsRepository{
 
   async findCategoryByName(category:Categories){
     const foundCategory =await this.categoriesRepository.findOne({where:{name:category.id }})
-    
-    
     if (!foundCategory) {
       throw new Error(`Categoria ${category} no encontrada`)
     }
@@ -41,7 +38,7 @@ export class ProductsRepository{
  async createProduct(products:Product):Promise<Product|string>{
   const existingProduct= (await this.productRepository.find()).map((products)=>products.name)
     if (!existingProduct.includes(products.name)) {
-      const product= new Product()
+      const product= new Product() // Cambiar
       product.name = products.name
       product.description=products.description
       product.price=products.price
@@ -92,15 +89,5 @@ export class ProductsRepository{
     })
   }
 
-  /*async uploadFile(file:fileDto, id:string){
-    const url = await this.FileService.uploadFile({
-      fieldname:file.fieldname,
-      buffer:file.buffer,
-      originalname:file.originalname,
-      mimetype:file.mimetype,
-      size:file.size
-    })
-    await this.productRepository.update(id, {imgUrl:url})
-    return {imgUrl:url}
-  }*/
+
 }
