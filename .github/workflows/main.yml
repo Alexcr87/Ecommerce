@@ -27,6 +27,6 @@ jobs:
         context: ./back
         file: ./back/Dockerfile
         push: true
-        tags: ${{secrets.DOCKERHUB_USERNAME}}/ecommerce:latets
+        tags: ${{secrets.DOCKERHUB_USERNAME}}/ecommerce:latest
     
     
