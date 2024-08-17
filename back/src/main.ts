@@ -20,9 +20,9 @@ async function bootstrap() {
   const categoriesSeed=app.get(CategoriesSeed)
   await categoriesSeed.seed()
   const swaggerConfig = new DocumentBuilder()
-  .setTitle('Demo Nest')
-  .setDescription('Esta es una API construida con Nest para ser empleada en las demos del modulo 4')
-  .setVersion('1.0')
+  .setTitle('Ecommerce Alexcr87')
+  .setDescription('Esta es una API construida con Nest para ser empleada en el modulo 4')
+  .setVersion('2.0')
   .addBearerAuth()
   .build()
   

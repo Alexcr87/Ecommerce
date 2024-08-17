@@ -14,6 +14,7 @@ export class ProductsContoller{
 
   @Get()
   @HttpCode(200)
+  @UseGuards(AuthGuard, RolesGuard)
   getProducts(@Query("page") page?:string, @Query("limit") limit?:string){
     if (page||limit) {
       return this.ProductsService.getProductsForPage(Number(page),Number(limit))
