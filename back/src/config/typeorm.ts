@@ -7,11 +7,11 @@ dotenvConfig({path: '.env.development'})
 
 const config ={
   type:'postgres',
-  database: process.env.DB_NAME,
+  database: process.env.POSTGRES_DB,
   host:process.env.DB_HOST,
   port:process.env.DB_PORT as unknown as number,
   username:process.env.DB_USERNAME,
-  password:process.env.DB_PASSWORD,
+  password:process.env.POSTGRES_PASSWORD,
   ssl: {
     rejectUnauthorized: false // Cambiar según la configuración de tu entorno
   },  
