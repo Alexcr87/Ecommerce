@@ -30,10 +30,10 @@ export class Product{
   @ApiProperty()
   imgUrl:string
 
-  @ManyToOne(()=>Categories, category=> category.products)
+  @ManyToOne(()=>Categories, category=> category.products,{eager:true})
   @JoinColumn({name:'category_id'})
   @ApiProperty({description:'La categoria debe ser un id en formato UUID'})
-  category_id:Categories
+  category:Categories
 
   @ManyToMany(()=>OrderDetails, orderdetails=>orderdetails.products)
   @JoinTable({

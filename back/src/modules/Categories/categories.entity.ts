@@ -13,7 +13,7 @@ export class Categories{
   @ApiProperty()
   name: string
 
-  @OneToMany(()=> Product, product=>product.category_id)
+  @OneToMany(()=> Product, product=>product.category)
   @ApiProperty()
   products: Product[]
 }

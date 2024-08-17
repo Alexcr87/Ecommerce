@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Param, ParseUUIDPipe, Post, UseGuards } from "@nestjs/common";
 import { OrdersService } from "./orders.service";
 import { CreateOrderDto } from "./createOrder.dto";
 import { AuthGuard } from "../Auth/auth.guard";
@@ -10,6 +10,7 @@ export class OrdersController{
   constructor(private readonly OrdersService:OrdersService){}
 
   @Get()
+  @HttpCode(200)
   getOrders(){
     return this.OrdersService.getOrders()
   }
@@ -17,6 +18,7 @@ export class OrdersController{
   @ApiBearerAuth()
   @Get(":id")
   @UseGuards(AuthGuard)
+  @HttpCode(200)
   getOrdersById(@Param("id", ParseUUIDPipe)id:string){
     return this.OrdersService.getOrdersById(id)
   }
@@ -24,6 +26,7 @@ export class OrdersController{
   @ApiBearerAuth()
   @Post()
   @UseGuards(AuthGuard)
+  @HttpCode(201)
   addOrders(@Body()Orders:CreateOrderDto){
     return this.OrdersService.addOrders(Orders)
   }

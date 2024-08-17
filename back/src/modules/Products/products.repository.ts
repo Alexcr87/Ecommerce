@@ -15,7 +15,7 @@ export class ProductsRepository{
 
 ){}
   async getProducts():Promise<Product[]>{
-    return await this.productRepository.find({relations:['category_id']})
+    return await this.productRepository.find()
   }
 
   async getProductById(id:string):Promise<string | Product[]>{
@@ -43,7 +43,7 @@ export class ProductsRepository{
       product.description=products.description
       product.price=products.price
       product.stock=products.stock
-      product.category_id = await this.findCategoryByName(products.category_id)
+      product.category = await this.findCategoryByName(products.category)
       await this.productRepository.save(product)
       return product
     }else{

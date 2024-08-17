@@ -15,7 +15,8 @@ export class UsersRepository{
 
   async getUserById(id:string):Promise<Omit< User, "password">| string>{
     const user= await this.usersRepository.findOne({
-      where: {id}
+      where: {id},
+      relations:{orders:true}
     })
     if (user){
       const {password, ...userToShow} =user
