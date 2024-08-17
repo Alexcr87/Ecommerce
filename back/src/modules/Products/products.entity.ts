@@ -3,6 +3,7 @@ import{v4 as uuid} from 'uuid'
 import { Categories } from "../Categories/categories.entity";
 import { OrderDetails } from "../Orders/orderDetails.entity";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsNumber, IsString, MaxLength } from "class-validator";
 
 
 @Entity({name:'products'})
@@ -11,23 +12,37 @@ export class Product{
   id: string = uuid()
 
   @Column({type:'varchar', length:50, nullable: false})
-  @ApiProperty({description:'El nombre del usuario, debe tener como mínimo 3 caracteres'})
+  @IsNotEmpty()
+  @MaxLength(50)
+  @IsString()
+  @ApiProperty({description:'El nombre del producto, debe tener como máximo 50 caracteres'})
   name: string
 
   @Column({type:'text', nullable: false})
-  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({example:'Una breve descrición del producto'})
   description: string
 
   @Column({type:'decimal', precision:10, scale:2, nullable: false })
-  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({
+    description: 'Precio del producto en decimal',
+    example:99.99})
   price: number
 
   @Column({type:'numeric', nullable: false})
-  @ApiProperty()
+  @IsNumber()
+  @ApiProperty({
+    description:'Cantidad de stock',
+    example:99})
   stock: number
 
-  @Column({type:'varchar', default:'../../assets/sinStock.png'})
-  @ApiProperty()
+  @Column({type:'varchar', default:'https://res.cloudinary.com/dkuxl5rdo/image/upload/v1722894656/upload/sinStock.png.png'})
+  @ApiProperty({description: 'Url de la Imagen',
+    example:'https://res.cloudinary.com/dkuxl5rdo/image/upload/v1722894656/upload/sinStock.png.png'
+  })
   imgUrl:string
 
   @ManyToOne(()=>Categories, category=> category.products,{eager:true})

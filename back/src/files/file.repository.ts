@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Product } from "../modules/Products/products.entity";
 import { Repository } from "typeorm";
-import { fileDto } from "./files.dto";
 import { FilesServices } from "./files.service";
 
 @Injectable()
@@ -12,14 +11,8 @@ export class FilesRepository{
     private readonly FilesService:FilesServices
   ){}
 
-  async uploadFile(file:fileDto, id:string){
-    const url = await this.FilesService.uploadFile({
-      fieldname:file.fieldname,
-      buffer:file.buffer,
-      originalname:file.originalname,
-      mimetype:file.mimetype,
-      size:file.size
-    }) 
+  async uploadFile(file:Express.Multer.File, id:string){
+    const url = await this.FilesService.uploadFile(file)
     await this.productRepository.update(id, {imgUrl:url})
     return {imgUrl:url}
   }

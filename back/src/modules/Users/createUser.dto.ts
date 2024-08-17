@@ -16,7 +16,7 @@ export class CreateUserDto{
   @IsString()
   @ApiProperty({
     description:'El email del usuario debe ser un email válido',
-    example:'example@gmail.com'
+    example:'Chris@gmail.com'
   })
   email:string
 

@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { CloudinaryService } from "../common/cloudinary.service";
-import { fileDto } from "./files.dto";
+
 
 @Injectable()
 export class FilesServices{
   constructor(private readonly cloudinaryService:CloudinaryService){}
   
-  async uploadFile(file:fileDto){
+  async uploadFile(file:Express.Multer.File){
     return this.cloudinaryService.uploadFile(file.buffer, file.originalname)
   }
 }

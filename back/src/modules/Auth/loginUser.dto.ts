@@ -7,7 +7,7 @@ export class LoginUserDto{
   @IsString()
   @ApiProperty({
     description:'El email del usuario debe ser un email válido',
-    example:'example@mail.com'
+    example:'example@gmail.com'
   })
   email:string
 

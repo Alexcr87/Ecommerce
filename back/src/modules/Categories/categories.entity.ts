@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import{v4 as uuid} from 'uuid'
 import { Product } from "../Products/products.entity";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 
 @Entity({name: 'categories'})
 export class Categories{
@@ -10,7 +11,10 @@ export class Categories{
   id: string = uuid()
 
   @Column({type: 'varchar', length:50, nullable: false})
-  @ApiProperty()
+  @IsNotEmpty()
+  @MaxLength(50)
+  @IsString()
+  @ApiProperty({description:'El nombre de la categoria, debe tener como máximo 50 caracteres'})
   name: string
 
   @OneToMany(()=> Product, product=>product.category)
