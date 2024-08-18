@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { UsersRepository } from "./users.repository";
-import { User } from "./users.entity"
 import { CreateUserDto } from "./createUser.dto";
 
 @Injectable()
@@ -12,10 +11,6 @@ export class UsersService{
 
   getUserById(id:string){
     return this.usersRepository.getUserById(id)
-  }
-
-  createUser(createUserDto:CreateUserDto){
-    return this.usersRepository.createUser(createUserDto)
   }
 
   updateUser(id:string, createUserDto:CreateUserDto){

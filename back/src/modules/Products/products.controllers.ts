@@ -20,23 +20,22 @@ export class ProductsContoller{
     } return  this.ProductsService.getProducts()
   }
 
-  @ApiBearerAuth()
+  
   @Get(":id")
-  @Roles(Rol.Admin)
   @HttpCode(200)
   getProductByID(@Param("id", ParseUUIDPipe) id:string){
     return this.ProductsService.getProductById(id)
   }                                  
 
   @Post()
-  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(201)
   createProduct(@Body () product:Product){ 
     return this.ProductsService.createProduct(product)
   } 
 
   @ApiBearerAuth()
-  @Put(":id") 
+  @Put(":id")
+  @Roles(Rol.Admin) 
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(200)
   updateProduct(@Body() product:Product, @Param("id", ParseUUIDPipe) id:string){
@@ -44,7 +43,6 @@ export class ProductsContoller{
   }
 
   @Delete(":id")
-  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(200)
   deleteProduct(@Param("id", ParseUUIDPipe)id:string){
     return  this.ProductsService.deleteProduct(id)

@@ -11,9 +11,7 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 @ApiTags('Users')
 @Controller("users")
 export class UsersController{
-  constructor(private readonly userService:UsersService,
-
-  ){}
+  constructor(private readonly userService:UsersService){}
 
   @ApiBearerAuth()
   @Get()
@@ -40,11 +38,6 @@ export class UsersController{
     return this.userService.getUserById(id)
   }
 
-  @Post()
-  @HttpCode(201)
-  createUser(@Body()createUserDto:CreateUserDto){
-    return this.userService.createUser(createUserDto)
-  }
 
   @ApiBearerAuth()
   @Put(":id")
