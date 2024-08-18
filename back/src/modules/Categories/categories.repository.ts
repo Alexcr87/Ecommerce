@@ -16,16 +16,14 @@ export class CategoriesRepository{
     if (!newCategory) {
       return await this.categoriesRepository.save(categories)
     }else {return `categoria con nombre ${categories.name} existente`}
-    
-    //const newCategory = await this.categoriesRepository.findOne({ where:{name}})
-    //if (!newCategory) {
-      
-    //  return await this.categoriesRepository.save(categories)
-    //}else{return `Categoria con nombre ${name} existente`}
   }
+
   async findCategoryByName(category:string){
-    const foundCategory =await this.categoriesRepository.findOne({where:{name:category }})
+    console.log(category, "repositorio categorias");
     
+    const foundCategory =await this.categoriesRepository.findOne({where:{name:category }})
+
+    console.log(foundCategory,"found category repo categorias");
     
     if (!foundCategory) {
       throw new Error(`Categoria ${category} no encontrada`)

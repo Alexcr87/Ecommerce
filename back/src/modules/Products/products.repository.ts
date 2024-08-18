@@ -27,27 +27,29 @@ export class ProductsRepository{
     }
   }
 
-  async findCategoryByName(category:Categories){
-    const foundCategory =await this.categoriesRepository.findOne({where:{name:category.id }})
+  async findCategoryByName(categoryname:string){
+    const foundCategory =await this.categoriesRepository.findOne({where:{name:categoryname }})
     if (!foundCategory) {
-      throw new Error(`Categoria ${category} no encontrada`)
+      throw new Error(`Categoria ${categoryname} no encontrada`)
     }
     return foundCategory
   }
 
  async createProduct(products:Product):Promise<Product|string>{
   const existingProduct= (await this.productRepository.find()).map((products)=>products.name)
-    if (!existingProduct.includes(products.name)) {
-      const product= new Product() // Cambiar
-      product.name = products.name
-      product.description=products.description
-      product.price=products.price
-      product.stock=products.stock
-      product.category = await this.findCategoryByName(products.category)
-      await this.productRepository.save(product)
-      return product
+ 
+  const category = await this.findCategoryByName(products.category as unknown as string)
+  
+  if (!category) {
+    return `La categoria con Nombre ${category} no existe, por favor cree una categoria antes de continuar`
+  }
+
+  if (!existingProduct.includes(products.name)) {
+      const newProduct = this.productRepository.create({ ...products, category });
+      await this.productRepository.save(newProduct)
+      return newProduct
     }else{
-      return `el porducto con con nombre ${products.name} ya existe`
+      return `el porducto con con nombre: ${products.name} ya existe`
     }
 
   }

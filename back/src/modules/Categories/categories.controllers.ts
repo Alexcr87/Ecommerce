@@ -9,10 +9,10 @@ import { ApiTags } from "@nestjs/swagger";
 export class CategoriesControllers{
   constructor(private readonly categoriesService: CategoriesService){}
 
-  @Post()
-  @HttpCode(201)
+ @Post()
+ @HttpCode(201)
  addCategories(@Body()categories:Categories){
-   return this.categoriesService.addCategories(categories)}
+  return this.categoriesService.addCategories(categories)}
 
  @Get()
  @HttpCode(200)
