@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import{Categories} from '../../../modules/Categories/categories.entity'
 import { Product } from "../../../modules/Products/products.entity";
@@ -13,18 +13,22 @@ export class ProductsSeed{
     @InjectRepository(Categories) private readonly categoriesRepository:Repository<Categories>
 ) {}
 
-async findCategoryByName(category:string){
-  const foundCategory =await this.categoriesRepository.findOne({where:{name:category }})
-  
-  
-  if (!foundCategory) {
-    throw new Error(`Categoria ${category} no encontrada`)
+async findCategoryByName(category:string):Promise<Categories>{
+  try {
+    const foundCategory =await this.categoriesRepository.findOne({where:{name:category }})
+    if (!foundCategory) {
+      throw new NotFoundException(`Categoria ${category} no encontrada`)
+    }
+    return foundCategory
+  } catch (error) {
+    throw new InternalServerErrorException(`Error al buscar la categoría ${category}:${error.message}`)
   }
-  return foundCategory
+ 
 }
 
 async seed (){
-  const existingProduct= (await this.productRepository.find()).map((product)=>product.name)
+  try {
+    const existingProduct= (await this.productRepository.find()).map((product)=>product.name)
 
   for (const productData of productsMock) {
     if (!existingProduct.includes(productData.name)) {
@@ -38,6 +42,10 @@ async seed (){
     }
     
   }
+  } catch (error) {
+    throw new InternalServerErrorException(`Error al ejecutar el seeding de products:${error.message}`)
+  }
+  
 }
 
 }

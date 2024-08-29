@@ -9,9 +9,10 @@ import { Product } from "../modules/Products/products.entity";
 import { Categories } from "../modules/Categories/categories.entity";
 
 
+
 @Module({
   imports:[TypeOrmModule.forFeature([Product, Categories])],
-  providers:[FilesServices,CloudinaryService, FilesRepository, ProductsRepository,],
+  providers:[FilesServices,CloudinaryService, FilesRepository, ProductsRepository],
   controllers:[FilesController]
 })
 export class FilesModule{}
