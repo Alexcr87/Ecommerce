@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Order } from "./order.entity";
 import { In, Repository } from "typeorm";
@@ -18,17 +18,23 @@ export class OrdersRepository{
   ){}
   
   async addOrders(Orders: CreateOrderDto): Promise<toShowOrderDto> {
-    const foundUser = await this.userRepository.findOne({ where: { id: Orders.userId } })
+
+    try {
+      const foundUser = await this.userRepository.findOne({ where: { id: Orders.userId } })
     if (!foundUser) {
       throw new NotFoundException(`Usuario con id ${Orders.userId} no encontrado`)
     }
   
     const productIds = Orders.products.map(obj => obj.id)
     const existingProducts = await this.productRepository.findBy({ id: In(productIds) })
+
+    if(existingProducts.length !== Orders.products.length){
+      throw new BadRequestException(`Algunos productos no fueron encontrados`)
+    }
     
     for (const product of existingProducts) {
       const orderProduct = Orders.products.find(p => p.id === product.id);
-      if (product.stock <= 0) {
+      if (product.stock < 1) {
         throw new BadRequestException(`El producto ${product.name} no tiene stock suficiente`);
       }}
 
@@ -61,21 +67,34 @@ export class OrdersRepository{
       price: newOrderDetails.price,
       products: existingProducts.map(product => ({ name: product.name }))
     }
+    } catch (error) {
+      throw new InternalServerErrorException(`Error al agregar las Ordenes:${error.message}`)
+    }
+    
   }
   
   async getOrders():Promise<Order[]>{
-    return await this.orderRepository.find()
+    try {
+      return await this.orderRepository.find()
+    } catch (error) {
+      throw new InternalServerErrorException(`Error al obtener las Ordenes: ${error.message}`)
+    }
   }
   async getOrdersById(id: string) {
-    const order = await this.orderRepository.findOne({
-      where:{id},
-      relations:['orderDetails','orderDetails.products']
-    })
-    if (order) {
-      return order
-    }else{
-     throw new NotFoundException (`Orden con id: ${id} no encontrado`)
+    try {
+      const order = await this.orderRepository.findOne({
+        where:{id},
+        relations:['orderDetails','orderDetails.products']
+      })
+      if (order) {
+        return order
+      }else{
+       throw new NotFoundException (`Orden con id: ${id} no encontrado`)
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(`Error al obtener la Ordenes con id: ${id}: ${error.message}`)
     }
+   
   }
   
 }

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Categories } from "./categories.entity";
 import { Repository } from "typeorm";
@@ -8,26 +8,36 @@ export class CategoriesRepository{
   constructor (@InjectRepository(Categories) private categoriesRepository:Repository<Categories>){}
 
   async getCategories():Promise<Categories[]> {
-    return await this.categoriesRepository.find({relations:['products']})
+    try {
+      return await this.categoriesRepository.find({relations:['products']})
+    } catch (error) {
+      throw new InternalServerErrorException(`Error al obtener las Categorias: ${error.message}`)
+    }
   }
   
   async addCategories(categories:Categories): Promise<Categories|string> {
+    try {  
       const newCategory=await this.categoriesRepository.findOne({where:{name:categories.name}})
     if (!newCategory) {
       return await this.categoriesRepository.save(categories)
-    }else {return `categoria con nombre ${categories.name} existente`}
+    }else {
+      throw new BadRequestException(`categoria con nombre ${categories.name} existente`)
+    }
+    } catch (error) {
+      throw new InternalServerErrorException(`Error al agregar la Categoria: ${categories}: ${error.message}`)
+    }
   }
 
   async findCategoryByName(category:string){
-    console.log(category, "repositorio categorias");
-    
-    const foundCategory =await this.categoriesRepository.findOne({where:{name:category }})
-
-    console.log(foundCategory,"found category repo categorias");
-    
-    if (!foundCategory) {
-      throw new Error(`Categoria ${category} no encontrada`)
-    }
-    return foundCategory
+    try {
+      const foundCategory =await this.categoriesRepository.findOne({where:{name:category }})    
+      if (!foundCategory) {
+        throw new NotFoundException(`Categoria ${category} no encontrada`)
+      }
+      return foundCategory
+    } catch (error) {
+      throw new InternalServerErrorException(`Error al buscar la categoria ${category}: ${error.message}`)
+    } 
+   
   }
 }

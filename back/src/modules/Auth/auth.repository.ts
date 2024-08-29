@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable} from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException} from "@nestjs/common";
 import { UsersRepository } from "../Users/users.repository";
 import { LoginUserDto } from "./loginUser.dto";
 import { CreateUserDto } from "../Users/createUser.dto";
@@ -14,40 +14,47 @@ export class AuthRepository{
     private readonly jwtService:JwtService
 
   ){}
+
+
   async signin(user:LoginUserDto){
+    try {
+      if (!user.email ||!user.password) {
+        throw new BadRequestException('Los campos Email y Password deben ser completados')
+      }
+  
+      const login = await this.userRepository.findUserByEmail(user.email)
+  
+      if (!login) {   
+        throw new BadRequestException('Email o password incorrectos')
+      }
+  
+      const validPassword = await bcrypt.compare(user.password, login.password)
+  
+      if (!validPassword) {   
+        throw new BadRequestException('Email o password incorrectos')
+      }
+  
+      const userPayload ={
+        sub: login.id,
+        id:login.id,
+        email:login.email,
+        roles:[login.isAdmin ? Rol.Admin : false]
+      }  
+      
+      const token = this.jwtService.sign(userPayload)
     
-    if (!user.email ||!user.password) {
-      throw new BadRequestException('Los campos Email y Password deben ser completados')
+      return { succes: 'Login Exitoso, Tu sesion caducara en 1 hora', token}
+    } catch (error) {
+      throw new InternalServerErrorException(`Error en el proceso de inicio de sesión: ${error.message}`)
     }
-
-    const login = await this.userRepository.findUserByEmail(user.email)
-
-    if (!login) {   
-      throw new BadRequestException('Email o password incorrectos')
-    }
-
-    const validPassword = await bcrypt.compare(user.password, login.password)
-
-    if (!validPassword) {   
-      throw new BadRequestException('Email o password incorrectos')
-    }
-
-    const userPayload ={
-      sub: login.id,
-      id:login.id,
-      email:login.email,
-      roles:[login.isAdmin ? Rol.Admin : false]
-    }  
-    
-    const token = this.jwtService.sign(userPayload)
     
     
-
-    return { succes: 'Login Exitoso, Tu sesion caducara en 1 hora', token}
   }
 
   async signUp(createUser: CreateUserDto):Promise<Omit<User, 'password'>>{
-    const user = await this.userRepository.findUserByEmail(createUser.email)
+
+    try {
+      const user = await this.userRepository.findUserByEmail(createUser.email)
     if (user) {
       throw new BadRequestException('El email ya se encuentra registrado')
     }
@@ -61,5 +68,10 @@ export class AuthRepository{
     const newUser = await this.userRepository.createUser({...createUser, password:hashedPassword})
   
     return newUser
+
+    } catch (error) {
+      throw new InternalServerErrorException(`Error al registrar usuario: ${error.message}`)
+    }
+    
   }
 }
