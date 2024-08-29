@@ -12,4 +12,4 @@ EXPOSE 3001
 
 RUN npm rebuild bcrypt --build-from-source
 
-CMD ["npm","run","start", "--watch"]
+CMD ["npm","run","start:dev"]

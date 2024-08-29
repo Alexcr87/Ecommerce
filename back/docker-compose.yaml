@@ -1,4 +1,4 @@
-version: '23.0'
+
 
 services:
   nestapp:
@@ -9,7 +9,7 @@ services:
       - .env.development
     depends_on:
       - postgresdb
-
+    command: npm run start:dev
   postgresdb:
     image: postgres
     volumes:

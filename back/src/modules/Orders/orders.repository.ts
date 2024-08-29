@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Order } from "./order.entity";
 import { In, Repository } from "typeorm";
@@ -17,41 +17,50 @@ export class OrdersRepository{
     @InjectRepository(Product) private productRepository:Repository<Product>
   ){}
   
-  async addOrders(Orders:CreateOrderDto):Promise<toShowOrderDto>{
-    const foundUser = await this.userRepository.findOne({where:{id:Orders.userId}})
+  async addOrders(Orders: CreateOrderDto): Promise<toShowOrderDto> {
+    const foundUser = await this.userRepository.findOne({ where: { id: Orders.userId } })
     if (!foundUser) {
-      throw new Error(`Usuario con id ${Orders.userId} no encontrado`)
-    }else{
-      const productIds = Orders.products.map(obj => obj.id)
-      const existingProducts = await this.productRepository.findBy({ id: In(productIds) })
-      const newOrderDetails = new OrderDetails()
-      const newOrder=new Order()
-      newOrder.user= foundUser
-      newOrder.date = new Date()
-      this.orderRepository.save(newOrder)
-      newOrderDetails.order = newOrder
-      newOrderDetails.products = existingProducts
-      const totalPrice = existingProducts.reduce((acc, product) => {
-        const productPrice = parseFloat(product.price.toString())
-        return acc + productPrice
-      }, 0)
-      newOrderDetails.price = totalPrice;
-      for (const product of existingProducts) {
-        product.stock = product.stock -1
-        await this.productRepository.save(product)
-      }
-      
-      await this.orderDetailsRepository.save(newOrderDetails)
-      return {
-        orderId: newOrder.id,
-        userId: foundUser.id,
-        date: newOrder.date,
-        orderDetailsId: newOrderDetails.id,
-        price: newOrderDetails.price,
-        products: existingProducts.map(product => ({ name: product.name }))
-      }
+      throw new NotFoundException(`Usuario con id ${Orders.userId} no encontrado`)
     }
+  
+    const productIds = Orders.products.map(obj => obj.id)
+    const existingProducts = await this.productRepository.findBy({ id: In(productIds) })
     
+    for (const product of existingProducts) {
+      const orderProduct = Orders.products.find(p => p.id === product.id);
+      if (product.stock <= 0) {
+        throw new BadRequestException(`El producto ${product.name} no tiene stock suficiente`);
+      }}
+
+    const newOrder = this.orderRepository.create({
+      user: foundUser,
+      date: new Date()
+    })
+  
+    await this.orderRepository.save(newOrder)
+  
+    const totalPrice = existingProducts.reduce((acc, product) => {
+      product.stock -= 1
+      this.productRepository.save(product)
+      return acc + parseFloat(product.price.toString())
+    }, 0)
+  
+    const newOrderDetails = this.orderDetailsRepository.create({
+      order: newOrder,
+      products: existingProducts,
+      price: totalPrice
+    })
+  
+    await this.orderDetailsRepository.save(newOrderDetails)
+  
+    return {
+      orderId: newOrder.id,
+      userId: foundUser.id,
+      date: newOrder.date,
+      orderDetailsId: newOrderDetails.id,
+      price: newOrderDetails.price,
+      products: existingProducts.map(product => ({ name: product.name }))
+    }
   }
   
   async getOrders():Promise<Order[]>{
@@ -65,7 +74,7 @@ export class OrdersRepository{
     if (order) {
       return order
     }else{
-      return `Orden con id: ${id} no encontrado`
+     throw new NotFoundException (`Orden con id: ${id} no encontrado`)
     }
   }
   
