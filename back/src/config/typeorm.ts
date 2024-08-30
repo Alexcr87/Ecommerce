@@ -13,7 +13,7 @@ const config ={
   username:process.env.DB_USERNAME,
   password:process.env.POSTGRES_PASSWORD,
   ssl: {
-    rejectUnauthorized: false // Cambiar según la configuración de tu entorno
+    rejectUnauthorized: false 
   },  
   autoLoadEntities: true,
   dropSchema:false,     

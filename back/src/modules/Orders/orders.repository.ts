@@ -68,6 +68,9 @@ export class OrdersRepository{
       products: existingProducts.map(product => ({ name: product.name }))
     }
     } catch (error) {
+      if (error instanceof NotFoundException || BadRequestException) {
+        throw error
+      }
       throw new InternalServerErrorException(`Error al agregar las Ordenes:${error.message}`)
     }
     
@@ -92,6 +95,9 @@ export class OrdersRepository{
        throw new NotFoundException (`Orden con id: ${id} no encontrado`)
       }
     } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
       throw new InternalServerErrorException(`Error al obtener la Ordenes con id: ${id}: ${error.message}`)
     }
    

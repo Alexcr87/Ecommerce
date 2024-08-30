@@ -13,13 +13,14 @@ export class User{
 
   
   @Column({type: "varchar", length: 50, nullable: false, unique: true})
+  @IsEmail()
   @ApiProperty({
     description:'El email del usuario debe ser un email válido',
     example:'example@gmail.com'
   })
   email: string
 
-  @Column({type: "varchar", length: 50, nullable: false})
+  @Column({type: "varchar", length: 80, nullable: false})
   @IsNotEmpty()
   @IsString()
   @MinLength(3)
@@ -30,7 +31,6 @@ export class User{
   name: string
 
   @Column({type: "varchar",nullable: false})
-  @IsEmail()
   @IsNotEmpty()
   @IsString()
   @ApiProperty({

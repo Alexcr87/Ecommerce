@@ -15,7 +15,6 @@ export class AuthRepository{
 
   ){}
 
-
   async signin(user:LoginUserDto){
     try {
       if (!user.email ||!user.password) {
@@ -45,9 +44,11 @@ export class AuthRepository{
     
       return { succes: 'Login Exitoso, Tu sesion caducara en 1 hora', token}
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error
+      }
       throw new InternalServerErrorException(`Error en el proceso de inicio de sesión: ${error.message}`)
     }
-    
     
   }
 
@@ -61,6 +62,7 @@ export class AuthRepository{
     if (createUser.password !== createUser.confirmPassword) {
       throw new BadRequestException('Las contraseñas no coinciden')
     }
+
     const hashedPassword = await bcrypt.hash(createUser.password, 10)
     if (!hashedPassword) {
       throw new BadRequestException('La contraseña no fue codificada')
@@ -70,6 +72,9 @@ export class AuthRepository{
     return newUser
 
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error
+      }
       throw new InternalServerErrorException(`Error al registrar usuario: ${error.message}`)
     }
     

@@ -33,6 +33,9 @@ export class ProductsRepository{
         throw new NotFoundException(`Producto con id:${id} no encontrado`)
       }
     } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
       throw new InternalServerErrorException(`Error al obtener producto con id: ${id}: ${error.message}`)
     }
   }
@@ -45,6 +48,9 @@ export class ProductsRepository{
     }
     return foundCategory
     } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
      throw new Error(`Error al buscar la categoría con Nombre: ${categoryname}: ${error.message}`) 
     }
     
@@ -68,6 +74,9 @@ export class ProductsRepository{
   return await this.productRepository.save(newProduct)
 
   } catch (error) {
+    if (error instanceof BadRequestException) {
+      throw error
+    }
     throw new InternalServerErrorException(`Error al crear el producto: "${error.message}"`)
   }
   
@@ -83,6 +92,9 @@ export class ProductsRepository{
         throw new NotFoundException(`Producto con id: ${id} no encontrado`)
       }  
     } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
       throw new InternalServerErrorException(`Error al actualizar el producto: ${id}: ${error.message}`)
     }
     
@@ -97,6 +109,9 @@ export class ProductsRepository{
       throw new NotFoundException(`Producto no entonrado ${id}`)
     }
     } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
       throw new InternalServerErrorException(`Error al eliminar el producto con id: ${id}: ${error.message}`)
     }
      

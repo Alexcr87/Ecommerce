@@ -21,6 +21,9 @@ async findCategoryByName(category:string):Promise<Categories>{
     }
     return foundCategory
   } catch (error) {
+    if (error instanceof NotFoundException) {
+      throw error
+    }
     throw new InternalServerErrorException(`Error al buscar la categoría ${category}:${error.message}`)
   }
  

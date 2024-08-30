@@ -15,7 +15,7 @@ describe('AppController (e2e)', () => {
     }).compile();
     app = moduleFixture.createNestApplication();
     await app.init();
-  });
+  })
 
   it('Probando Loguin', async ()=>{
     const req =(await request(app.getHttpServer()).post('/auth/signin').send({
@@ -29,7 +29,7 @@ describe('AppController (e2e)', () => {
     console.log(req.body);
     expect (req.status).toBe(200)
     expect(req.body).toBeInstanceOf(Array)
-  });
+  })
   it('Delete /users/:id delete a user with an OK status code', async()=>{
     const req = await request(app.getHttpServer()).delete('/users/b7bc51f6-ece7-472c-90bc-d206b3767d91').set('authorization', `Bearer ${authToken}`)
     expect(req.status).toBe(200)
@@ -59,7 +59,4 @@ describe('AppController (e2e)', () => {
     expect(req.status).toBe(200)
     expect(req.body).toBeInstanceOf(Object)
   })
-
-
-  
-});
+})

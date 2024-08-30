@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./users.entity";
 import { CreateUserDto } from "./createUser.dto";
+import * as bcrypt from 'bcrypt'
 
 
 
@@ -31,6 +32,9 @@ export class UsersRepository{
       }
       throw new NotFoundException(`Usuario con id: ${id} no encontrado`)
     } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
       throw new InternalServerErrorException(`Error al obtener el usuario:${id} solicitado:${error.message}`)
     }
     
@@ -52,13 +56,17 @@ export class UsersRepository{
       const userToUpdate = await this.usersRepository.findOne({where: {id}})
 
       if (userToUpdate) {
-        const updatedUser = await this.usersRepository.save({ ...userToUpdate, ...createUserDto })
+        const hashedPassword = await bcrypt.hash(createUserDto.password, 10)
+        const updatedUser = await this.usersRepository.save({ ...userToUpdate, ...createUserDto, password:hashedPassword })
         const { password, ...userToShow } = updatedUser
         return userToShow
       }else{
         throw new NotFoundException(`Usuario con id: ${id} no encontrado`)
       }
     } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
       throw new InternalServerErrorException(`Error al actualizar el usuario con id:${id} :${error.message}`)
     }
    
@@ -74,6 +82,9 @@ export class UsersRepository{
         throw new NotFoundException(`Usuario con id: ${id} no encontrado`)
       }
     } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }      
       throw new InternalServerErrorException(`Error al eliminar el usuario con id: ${id}:${error.message}`)
     }
    

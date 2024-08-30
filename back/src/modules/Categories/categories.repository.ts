@@ -24,6 +24,9 @@ export class CategoriesRepository{
       throw new BadRequestException(`categoria con nombre ${categories.name} existente`)
     }
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error
+      }
       throw new InternalServerErrorException(`Error al agregar la Categoria: ${categories}: ${error.message}`)
     }
   }
@@ -36,6 +39,9 @@ export class CategoriesRepository{
       }
       return foundCategory
     } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
       throw new InternalServerErrorException(`Error al buscar la categoria ${category}: ${error.message}`)
     } 
    

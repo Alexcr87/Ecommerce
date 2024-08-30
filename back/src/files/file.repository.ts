@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Product } from "../modules/Products/products.entity";
 import { Repository } from "typeorm";
@@ -12,9 +12,14 @@ export class FilesRepository{
   ){}
 
   async uploadFile(file:Express.Multer.File, id:string){
-    const url = await this.FilesService.uploadFile(file)
+    try {
+      const url = await this.FilesService.uploadFile(file)
     await this.productRepository.update(id, {imgUrl:url})
     return {imgUrl:url}
+    } catch (error) {
+      throw new InternalServerErrorException(`Error al cargar el archivo: ${error.message}`)
+    }
+    
   }
 
 }
