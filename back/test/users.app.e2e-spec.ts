@@ -17,24 +17,23 @@ describe('AppController (e2e)', () => {
     await app.init();
   })
 
-  it('Probando Loguin', async ()=>{
+  it('Post /auth/signin should Sign in a user with an Ok status code', async ()=>{
     const req =(await request(app.getHttpServer()).post('/auth/signin').send({
-      email: "yesi@gmail.com",
+      email: "example@gmail.com",
 	    password: "12345aS@"
     }))
+    expect(req.status).toBe(201);
+    expect(req.body).toBeInstanceOf(Object)
     authToken= req.body.token
   })
+
+
   it('Get /users/ return an array of users with an Ok status Code', async () => {
     const req = await request(app.getHttpServer()).get('/users').set('authorization', `Bearer ${authToken}`)
-    console.log(req.body);
     expect (req.status).toBe(200)
     expect(req.body).toBeInstanceOf(Array)
   })
-  it('Delete /users/:id delete a user with an OK status code', async()=>{
-    const req = await request(app.getHttpServer()).delete('/users/b7bc51f6-ece7-472c-90bc-d206b3767d91').set('authorization', `Bearer ${authToken}`)
-    expect(req.status).toBe(200)
-  })
-  
+
   it('Post /auth/signup create a user with an OK status code', async()=>{
     const req = await request(app.getHttpServer()).post('/auth/signup').send({
       id: "b7bc51f6-ece7-472c-90bc-d206b3767d91",
@@ -47,9 +46,7 @@ describe('AppController (e2e)', () => {
       country:'Argentina',
       city:'Santos Lugares',
       isAdmin:true
-    })
-    console.log(req.body);
-    
+    })   
     expect(req.status).toBe(201)
     expect(req.body).toBeInstanceOf(Object)
   })
@@ -58,5 +55,10 @@ describe('AppController (e2e)', () => {
     const req = await request(app.getHttpServer()).get('/users/b7bc51f6-ece7-472c-90bc-d206b3767d91').set('authorization', `Bearer ${authToken}`)
     expect(req.status).toBe(200)
     expect(req.body).toBeInstanceOf(Object)
+  })
+
+  it('Delete /users/:id delete a user with an OK status code', async()=>{
+    const req = await request(app.getHttpServer()).delete('/users/b7bc51f6-ece7-472c-90bc-d206b3767d91').set('authorization', `Bearer ${authToken}`)
+    expect(req.status).toBe(200)
   })
 })
