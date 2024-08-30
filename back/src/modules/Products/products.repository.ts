@@ -42,9 +42,11 @@ export class ProductsRepository{
 
   async findCategoryByName(categoryname:string){
     try {
-      const foundCategory =await this.categoriesRepository.findOne({where:{name:categoryname }})
+      let foundCategory =await this.categoriesRepository.findOne({where:{name:categoryname }})
     if (!foundCategory) {
-      throw new NotFoundException(`Categoria ${categoryname} no encontrada`)
+      const newCategory = this.categoriesRepository.create({name:categoryname})
+        await this.categoriesRepository.save(newCategory)
+        foundCategory = newCategory
     }
     return foundCategory
     } catch (error) {
