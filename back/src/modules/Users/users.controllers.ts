@@ -23,13 +23,6 @@ export class UsersController{
   }
   
 
-  @Get('auth0/protected')
-  @HttpCode(200)
-  getAuth0Protected(@Req()req:Request){
-    console.log(req.oidc);
-    return JSON.stringify(req.oidc.user)
-  }
-
   @ApiBearerAuth()
   @Get(":id")
   @UseGuards(AuthGuard)
