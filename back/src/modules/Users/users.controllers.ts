@@ -55,6 +55,4 @@ export class UsersController{
     return this.userService.deleteUser(id)
   }
 
-  
-
 }

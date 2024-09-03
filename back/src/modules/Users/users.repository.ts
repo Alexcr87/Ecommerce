@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./users.entity";
@@ -90,7 +90,7 @@ export class UsersRepository{
    
   }
 
-  async findUserByEmail(email: string) {
+  async findUserByEmail(email: string):Promise<User> {
     try {
       return await this.usersRepository.findOneBy({email})
     } catch (error) {

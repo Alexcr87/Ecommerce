@@ -20,5 +20,5 @@ export class UsersService{
   deleteUser(id:string){
     return this.usersRepository.deleteUser(id)
   }
-
+  
 }
